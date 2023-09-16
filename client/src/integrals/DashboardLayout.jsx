@@ -46,6 +46,9 @@ import CopyrightIcon from '@mui/icons-material/Copyright';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import WorldMapDashboard from './WorldMapDashboard';
 import RegionAnalysisDashboard from './RegionAnalysisDashboard';
+import { getCurrentTheme } from '../middleware/AppThemeController';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
@@ -113,7 +116,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-const DashboardLayout = () => {
+const DashboardLayout = (props) => {
     const theme = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
@@ -160,7 +163,7 @@ const DashboardLayout = () => {
     }, [location]);
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', height: '100%' }}>
             <CssBaseline />
             <AppBar sx={{ bgcolor: 'background.default', color: 'text.primary' }} elevation={0} position="fixed" open={open}>
                 <Toolbar>
@@ -176,9 +179,15 @@ const DashboardLayout = () => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        { pageTitle }
-                    </Typography>
+                    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+                        <img src='/favicon-32x32.png' style={{ maxHeight: '32px', borderRadius: '5px' }} />
+                        <Typography sx={{ marginLeft: '10px' }} variant="h6" noWrap component="div">
+                            { pageTitle }
+                        </Typography>
+                    </Box>
+                    <IconButton onClick={props.toggleTheme}>
+                        { getCurrentTheme() == "light" ? <DarkModeIcon /> : <LightModeIcon /> }
+                    </IconButton>
                 </Toolbar>
                 <Divider />
             </AppBar>
@@ -215,8 +224,7 @@ const DashboardLayout = () => {
                     ))}
                 </List>
             </Drawer>
-            <Box sx={{ flexGrow: 1 }}>
-                <DrawerHeader />
+            <Box sx={{ flexGrow: 1, marginTop: '64px' }}>
                 <Routes>
                     <Route path='/' element={<Navigate to="/world" />} exact />
                     <Route path='/world' element={<WorldMapDashboard />} exact />

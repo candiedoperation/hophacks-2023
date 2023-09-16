@@ -46,7 +46,7 @@ const App = () => {
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
       <Routes>
-        <Route path='/*' element={<DashboardLayout />} />
+        <Route path='/*' element={<DashboardLayout toggleTheme={toggleThemeWrapper} />} />
       </Routes>
     </ThemeProvider>
   );
