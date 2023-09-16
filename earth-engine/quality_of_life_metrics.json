@@ -1,0 +1,11 @@
+{
+    "air_quality": {
+        "NO2_column_number_density": 8.268149909384242e-05
+    },
+    "weather_quality": {
+        "Tair_f_inst": 296.5404391582391
+    },
+    "water_quality": {
+        "nd": -0.5045204643659761
+    }
+}
