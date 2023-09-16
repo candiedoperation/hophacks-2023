@@ -43,7 +43,9 @@ import ListItemText from '@mui/material/ListItemText';
 import MapIcon from '@mui/icons-material/Map';
 import SatelliteAltIcon from '@mui/icons-material/SatelliteAlt';
 import CopyrightIcon from '@mui/icons-material/Copyright';
-import { useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import WorldMapDashboard from './WorldMapDashboard';
+import RegionAnalysisDashboard from './RegionAnalysisDashboard';
 
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
@@ -114,6 +116,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const DashboardLayout = () => {
     const theme = useTheme();
     const location = useLocation();
+    const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const [pageTitle, setPageTitle] = React.useState("");
     const [drawerItems, setDrawerItems] = React.useState([]);
@@ -126,8 +129,8 @@ const DashboardLayout = () => {
         setOpen(false);
     };
 
-    const parsePageTitle = () => {
-        switch (location.pathname.substring(1)) {
+    const parsePageTitle = (path) => {
+        switch (path.substring(1)) {
             case 'world':
                 return "World Map";
 
@@ -143,16 +146,18 @@ const DashboardLayout = () => {
     }
 
     React.useEffect(() => {
-        /* Set AppBar Title */
-        setPageTitle(parsePageTitle());
-
         /* Add Drawer Items */
         setDrawerItems((dI) => ([
-            { primary: "World Map", icon: <MapIcon /> },
-            { primary: "Region Analysis", icon: <SatelliteAltIcon /> },
-            { primary: "Licenses", icon: <CopyrightIcon /> }
+            { primary: "World Map", path: "/world", icon: <MapIcon /> },
+            { primary: "Region Analysis", path: "/region", icon: <SatelliteAltIcon /> },
+            { primary: "Licenses", path: "/licenses", icon: <CopyrightIcon /> }
         ]));
     }, []);
+
+    React.useEffect(() => {
+        /* Set AppBar Title */
+        setPageTitle(parsePageTitle(location.pathname));
+    }, [location]);
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -188,6 +193,7 @@ const DashboardLayout = () => {
                     {drawerItems.map((drawerItem, key) => (
                         <ListItem key={key} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
+                                onClick={() => { navigate(drawerItem.path); }}
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
@@ -209,22 +215,13 @@ const DashboardLayout = () => {
                     ))}
                 </List>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box sx={{ flexGrow: 1 }}>
                 <DrawerHeader />
-                <Typography paragraph>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                    enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                    imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                    Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                    Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                    adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                    nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                    leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                    feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                    consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                    sapien faucibus et molestie ac.
-                </Typography>
+                <Routes>
+                    <Route path='/' element={<Navigate to="/world" />} exact />
+                    <Route path='/world' element={<WorldMapDashboard />} exact />
+                    <Route path='/region' element={<RegionAnalysisDashboard />} exact />
+                </Routes>
             </Box>
         </Box>
     )

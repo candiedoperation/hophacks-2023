@@ -46,8 +46,7 @@ const App = () => {
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
       <Routes>
-        <Route path='/' element={<Navigate to="/world" />} exact />
-        <Route path='/world' element={<DashboardLayout />} exact />
+        <Route path='/*' element={<DashboardLayout />} />
       </Routes>
     </ThemeProvider>
   );
