@@ -1,6 +1,7 @@
 import ee
 import json
-
+import rasterio
+from rasterio.enums import Resampling
 import urllib.request
 
 
@@ -22,6 +23,16 @@ def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
 # Define the Area of Interest (AOI)
 aoi = def_aoi()
 
+
+with rasterio.open('input_file.tif') as src:
+    data = src.read(
+        out_shape=(src.count, int(src.height), int(src.width)),
+        resampling=Resampling.bilinear
+    )
+    transform = src.transform
+
+with rasterio.open('output_file.png', 'w', driver='PNG', height=data.shape[1], width=data.shape[2], count=src.count, dtype=data.dtype) as dst:
+    dst.write(data)
 
 def get_image():
     """Get an Earth Engine Image object from GEE."""
@@ -86,6 +97,7 @@ quality_of_life_metrics = {
     'weather_quality': get_WeatherQuality(),
     'water_quality': get_WaterQuality()
 }
+
 
 
 # Save as a JSON file
