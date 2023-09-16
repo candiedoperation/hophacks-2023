@@ -133,7 +133,7 @@ const DashboardLayout = (props) => {
     };
 
     const parsePageTitle = (path) => {
-        switch (path.substring(1)) {
+        switch (path.split("/")[1]) {
             case 'world':
                 return "World Map";
 
@@ -228,7 +228,7 @@ const DashboardLayout = (props) => {
                 <Routes>
                     <Route path='/' element={<Navigate to="/world" />} exact />
                     <Route path='/world' element={<WorldMapDashboard />} exact />
-                    <Route path='/region' element={<RegionAnalysisDashboard />} exact />
+                    <Route path='/region/:loc' element={<RegionAnalysisDashboard />} exact />
                 </Routes>
             </Box>
         </Box>

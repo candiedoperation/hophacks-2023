@@ -23,24 +23,69 @@
 */
 
 import * as React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Autocomplete, Box, Divider, Grid, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import { getCurrentTheme } from '../middleware/AppThemeController';
+import axios from 'axios';
+import ExploreIcon from '@mui/icons-material/Explore';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useNavigate } from 'react-router-dom';
 
 const WorldMapDashboard = (props) => {
+    const navigate = useNavigate();
+    const [regions, setRegions] = React.useState([]);
+    const [regionText, setRegionText] = React.useState("");
+
+    const updateLoc = (regionSearch) => {
+        axios
+            .get(`https://geocoding-api.open-meteo.com/v1/search?name=${regionSearch}&count=8&language=en&format=json`)
+            .then((res) => {
+                if (res.data.results) setRegions((regions) => res.data.results);
+                else setRegions([]);
+            });
+    }
+
     return (
-        <Box sx={{ height: '100%', filter: (getCurrentTheme() == "light") ? "" : "invert(1) hue-rotate(210deg)" }}>
-            <MapContainer style={{ height: '100%' }} center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <Box sx={{ height: '100%', display: 'flex' }}>
+            <Box sx={{ height: '100%', flexGrow: 1, filter: (getCurrentTheme() == "light") ? "" : "invert(1) hue-rotate(210deg)" }}>
+                <MapContainer style={{ height: '100%' }} center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                </MapContainer>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '300px', boxShadow: 8, zIndex: 1000 }}>
+                <Box sx={{ padding: '0px 10px 0px 10px', display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <ExploreIcon sx={{ height: '56px', marginRight: '10px' }} />
+                    <Typography sx={{ fontWeight: '500' }} variant='h5'>Navigator</Typography>
+                </Box>
+                <Divider />
+                <Autocomplete
+                    sx={{ width: "100%", padding: '10px' }}
+                    options={regions}
+                    getOptionLabel={(option) => typeof option === 'string' ? option : `${option.name}, ${option.country_code}`}
+                    filterOptions={(x) => x}
+                    noOptionsText="No Regions"
+                    filterSelectedOptions
+                    autoComplete
+                    includeInputInList
+                    value={regionText}
+                    onInputChange={(e, v) => { setRegionText(v); updateLoc(v); }}
+                    onChange={(e, v) => { setRegionText(v); }}
+                    renderInput={(params) => (<TextField {...params} label="Select Region" fullWidth />)}
+                    renderOption={(props, option) => {
+                        return (
+                            <li {...props}>
+                                <ListItem onClick={() => { navigate(`/region/${option.latitude},${option.longitude}`) }}>
+                                    <ListItemIcon><LocationOnIcon sx={{ color: 'text.secondary' }} /></ListItemIcon>
+                                    <ListItemText primary={`${option.name}, ${option.country}`} secondary={`${option.latitude}°, ${option.longitude}°`} />
+                                </ListItem>
+                            </li>
+                        );
+                    }}
                 />
-                <Marker position={[51.505, -0.09]}>
-                    <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup>
-                </Marker>
-            </MapContainer>
+            </Box>
         </Box>
     );
 }
