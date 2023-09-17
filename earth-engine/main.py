@@ -96,7 +96,7 @@ def get_elev():
 
 def get_surface_temp():
     surface_temp = (ee.ImageCollection('MODIS/006/MOD11A1')
-                    .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+                    .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
                     .mean()
                     .select('LST_Day_1km')
                     .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=1000, maxPixels=1e9)
@@ -107,7 +107,7 @@ def get_surface_temp():
 def get_precipitation():
     precipitation = (ee.ImageCollection('NASA/GPM_L3/IMERG_MONTHLY_V06')
                      # Filter by date
-                     .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+                     .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
                      .mean()  # Take the mean over the time period
                      # Select the 'precipitation' band
                      .select('precipitation')
@@ -119,7 +119,7 @@ def get_precipitation():
 def get_era5():
     era5_data = (ee.ImageCollection('ECMWF/ERA5/MONTHLY')
                  # Filter by date
-                 .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+                 .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
                  .mean()  # Take the mean over the time period
                  # Select specific bands
                  .select(['mean_2m_air_temperature', 'minimum_2m_air_temperature', 'maximum_2m_air_temperature', 'dewpoint_2m_temperature', 'total_precipitation', 'surface_pressure', 'mean_sea_level_pressure', 'u_component_of_wind_10m', 'v_component_of_wind_10m'])
@@ -130,7 +130,7 @@ def get_era5():
 
 def get_AvgSurfT_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['AvgSurfT_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -140,7 +140,7 @@ def get_AvgSurfT_inst():
 
 def get_Wind_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Wind_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -150,7 +150,7 @@ def get_Wind_f_inst():
 
 def get_CanopyWatContent_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['CanopInt_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -162,7 +162,7 @@ def get_CanopyWatContent_inst():
 
 def get_ECanop_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['ECanop_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -174,7 +174,7 @@ def get_ECanop_tavg():
 
 def get_ESoil_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['ESoil_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -186,7 +186,7 @@ def get_ESoil_tavg():
 
 def get_Evap_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Evap_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -198,7 +198,7 @@ def get_Evap_tavg():
 
 def get_LWdown_f_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['LWdown_f_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -210,7 +210,7 @@ def get_LWdown_f_tavg():
 
 def get_PotEvap_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['PotEvap_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -222,7 +222,7 @@ def get_PotEvap_tavg():
 
 def get_Psurf_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Psurf_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -234,7 +234,7 @@ def get_Psurf_f_inst():
 
 def get_Qair_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Qair_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -246,7 +246,7 @@ def get_Qair_f_inst():
 
 def get_Qg_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Qg_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -257,7 +257,7 @@ def get_Qg_tavg():
 # Accumulated surface runoff
 def get_Qs_acc():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Qs_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -269,7 +269,7 @@ def get_Qs_acc():
 
 def get_Qsb_acc():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Qsb_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -281,7 +281,7 @@ def get_Qsb_acc():
 
 def get_Qsm_acc():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Qsm_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -293,7 +293,7 @@ def get_Qsm_acc():
 
 def get_Rainf_f_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Rainf_f_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -305,7 +305,7 @@ def get_Rainf_f_tavg():
 
 def get_Rainf_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Rainf_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -317,7 +317,7 @@ def get_Rainf_tavg():
 
 def get_RootMoist_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['RootMoist_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -327,7 +327,7 @@ def get_RootMoist_inst():
 
 def get_SoilMoi0_10cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['SoilMoi0_10cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -339,7 +339,7 @@ def get_SoilMoi0_10cm_inst():
 
 def get_SoilMoi100_200cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['SoilMoi100_200cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -351,7 +351,7 @@ def get_SoilMoi100_200cm_inst():
 
 def get_SoilTMP0_10cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['SoilTMP0_10cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -363,7 +363,7 @@ def get_SoilTMP0_10cm_inst():
 
 def get_SoilTMP100_200cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['SoilTMP100_200cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -375,7 +375,7 @@ def get_SoilTMP100_200cm_inst():
 
 def get_Wind_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
-            .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+            .filterDate(ee.Date('2020-06-01'), ee.Date('2020-06-30'))
             .mean()
             .select(['Wind_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
@@ -424,6 +424,8 @@ functions_to_run = [get_AirQuality, get_WeatherQuality, get_WaterQuality, get_el
 
 # Create an empty dictionary to hold the results
 quality_of_life_metrics = {}
+
+collect_metrics()
 
 # Create threads
 threads = []
