@@ -49,6 +49,8 @@ import RegionAnalysisDashboard from './RegionAnalysisDashboard';
 import { getCurrentTheme } from '../middleware/AppThemeController';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import RegionAnalysisRequest from './RegionAnalysisRequest';
+import LicensesDashboard from './LicensesDashboard';
 
 const drawerWidth = 240;
 const openedMixin = (theme) => ({
@@ -228,6 +230,8 @@ const DashboardLayout = (props) => {
                 <Routes>
                     <Route path='/' element={<Navigate to="/world" />} exact />
                     <Route path='/world' element={<WorldMapDashboard />} exact />
+                    <Route path='/licenses' element={<LicensesDashboard />} exact />
+                    <Route path='/region/' element={<RegionAnalysisRequest />} exact />
                     <Route path='/region/:loc' element={<RegionAnalysisDashboard />} exact />
                 </Routes>
             </Box>
