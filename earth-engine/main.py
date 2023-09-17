@@ -1,6 +1,5 @@
 import threading
 import ee
-import json
 import inspect
 from flask import Flask, request, jsonify
 
@@ -616,6 +615,7 @@ def lol():
     try: 
         b = main_func(float(lat), float(long))
     except:
+        print("Exception Occured!")
         b = sample_weather
     return b
 
