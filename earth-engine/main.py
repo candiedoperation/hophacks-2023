@@ -1,10 +1,12 @@
 import threading
 import ee
 import inspect
-from flask import Flask, request, jsonify
+from flask import Flask, request
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 # Initialize Earth Engine
 ee.Initialize()
@@ -141,10 +143,13 @@ def get_AirQuality():
 
     # Combine them into a single dictionary
     combined_data = {
-        **no2,
-        **o3,
-        **so2,
-        **co
+        'air_quality': {
+            **no2,
+            **o3,
+            **so2,
+            **co
+        }
+
 
     }
     with lock:
@@ -163,7 +168,7 @@ def get_WeatherQuality():
                        .select('Tair_f_inst')
                        .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
                        .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(weather_quality)
 
@@ -178,7 +183,7 @@ def get_WaterQuality():
                      .normalizedDifference(['B3', 'B5'])
                      .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9)
                      .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(water_quality)
 
@@ -190,7 +195,7 @@ def get_WaterQuality():
 def get_elev():
     elevation = ee.Image('USGS/SRTMGL1_003').reduceRegion(
         reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9).getInfo()
-    
+
     with lock:
         quality_of_life_metrics.update(elevation)
 
@@ -206,7 +211,7 @@ def get_surface_temp():
                     .select('LST_Day_1km')
                     .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=1000, maxPixels=1e9)
                     .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(surface_temp)
 
@@ -224,7 +229,7 @@ def get_precipitation():
                      .select('precipitation')
                      .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
                      .getInfo())  # Get the mean precipitation in the AOI
-    
+
     with lock:
         quality_of_life_metrics.update(precipitation)
 
@@ -242,7 +247,7 @@ def get_era5():
                  .select(['mean_2m_air_temperature', 'minimum_2m_air_temperature', 'maximum_2m_air_temperature', 'dewpoint_2m_temperature', 'total_precipitation', 'surface_pressure', 'mean_sea_level_pressure', 'u_component_of_wind_10m', 'v_component_of_wind_10m'])
                  .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
                  .getInfo())  # Get the average values within the AOI
-    
+
     with lock:
         quality_of_life_metrics.update(era5_data)
 
@@ -258,7 +263,7 @@ def get_AvgSurfT_inst():
             .select(['AvgSurfT_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -274,7 +279,7 @@ def get_Wind_f_inst():
             .select(['Wind_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -290,7 +295,7 @@ def get_CanopyWatContent_inst():
             .select(['CanopInt_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -308,7 +313,7 @@ def get_ECanop_tavg():
             .select(['ECanop_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -326,7 +331,7 @@ def get_ESoil_tavg():
             .select(['ESoil_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -344,7 +349,7 @@ def get_Evap_tavg():
             .select(['Evap_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -362,7 +367,7 @@ def get_LWdown_f_tavg():
             .select(['LWdown_f_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -380,7 +385,7 @@ def get_PotEvap_tavg():
             .select(['PotEvap_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -398,7 +403,7 @@ def get_Psurf_f_inst():
             .select(['Psurf_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -416,7 +421,7 @@ def get_Qair_f_inst():
             .select(['Qair_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -434,7 +439,7 @@ def get_Qg_tavg():
             .select(['Qg_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -451,7 +456,7 @@ def get_Qs_acc():
             .select(['Qs_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -469,7 +474,7 @@ def get_Qsb_acc():
             .select(['Qsb_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -487,7 +492,7 @@ def get_Qsm_acc():
             .select(['Qsm_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -505,7 +510,7 @@ def get_Rainf_f_tavg():
             .select(['Rainf_f_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -523,7 +528,7 @@ def get_Rainf_tavg():
             .select(['Rainf_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -541,7 +546,7 @@ def get_RootMoist_inst():
             .select(['RootMoist_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -557,7 +562,7 @@ def get_SoilMoi0_10cm_inst():
             .select(['SoilMoi0_10cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -575,7 +580,7 @@ def get_SoilMoi100_200cm_inst():
             .select(['SoilMoi100_200cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -593,7 +598,7 @@ def get_SoilTMP0_10cm_inst():
             .select(['SoilTMP0_10cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -611,7 +616,7 @@ def get_SoilTMP100_200cm_inst():
             .select(['SoilTMP100_200cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
@@ -629,7 +634,7 @@ def get_Wind_f_inst():
             .select(['Wind_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
-    
+
     with lock:
         quality_of_life_metrics.update(data)
 
