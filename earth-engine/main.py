@@ -1,3 +1,4 @@
+import threading
 import ee
 import json
 import rasterio
@@ -22,6 +23,7 @@ def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
 
 # Define the Area of Interest (AOI)
 aoi = def_aoi(27.9881, 86.9250)
+
 
 def get_AirQuality():
     # Air Quality
@@ -64,6 +66,7 @@ def get_AirQuality():
 
     return combined_data
 
+
 def get_WeatherQuality():
     # Weather Quality
     weather_quality = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
@@ -74,6 +77,7 @@ def get_WeatherQuality():
                        .getInfo())
     return weather_quality
 
+
 def get_WaterQuality():
     # Water Quality
     water_quality = (ee.Image('LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318')
@@ -82,11 +86,13 @@ def get_WaterQuality():
                      .getInfo())
     return water_quality
 
+
 def get_elev():
     elevation = ee.Image('USGS/SRTMGL1_003').reduceRegion(
         reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9).getInfo()
 
     return elevation
+
 
 def get_surface_temp():
     surface_temp = (ee.ImageCollection('MODIS/006/MOD11A1')
@@ -96,6 +102,7 @@ def get_surface_temp():
                     .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=1000, maxPixels=1e9)
                     .getInfo())
     return surface_temp
+
 
 def get_precipitation():
     precipitation = (ee.ImageCollection('NASA/GPM_L3/IMERG_MONTHLY_V06')
@@ -108,6 +115,7 @@ def get_precipitation():
                      .getInfo())  # Get the mean precipitation in the AOI
     return precipitation
 
+
 def get_era5():
     era5_data = (ee.ImageCollection('ECMWF/ERA5/MONTHLY')
                  # Filter by date
@@ -119,6 +127,7 @@ def get_era5():
                  .getInfo())  # Get the average values within the AOI
     return era5_data
 
+
 def get_AvgSurfT_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -128,6 +137,7 @@ def get_AvgSurfT_inst():
             .getInfo())
     return data
 
+
 def get_Wind_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -136,6 +146,7 @@ def get_Wind_f_inst():
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
     return data
+
 
 def get_CanopyWatContent_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
@@ -147,6 +158,8 @@ def get_CanopyWatContent_inst():
     return data
 
 # time-averaged canopy water evaporation
+
+
 def get_ECanop_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -157,6 +170,8 @@ def get_ECanop_tavg():
     return data
 
 # time-averaged soil water evaporation
+
+
 def get_ESoil_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -167,6 +182,8 @@ def get_ESoil_tavg():
     return data
 
 # time-averaged total evaporation
+
+
 def get_Evap_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -177,6 +194,8 @@ def get_Evap_tavg():
     return data
 
 # time-averaged downward longwave radiation flux
+
+
 def get_LWdown_f_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -187,6 +206,8 @@ def get_LWdown_f_tavg():
     return data
 
 # time-averaged potential evaporation rate
+
+
 def get_PotEvap_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -197,6 +218,8 @@ def get_PotEvap_tavg():
     return data
 
 # instantaneous surface air pressure
+
+
 def get_Psurf_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -207,6 +230,8 @@ def get_Psurf_f_inst():
     return data
 
 # instantaneous specific humidity
+
+
 def get_Qair_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -217,6 +242,8 @@ def get_Qair_f_inst():
     return data
 
 # time-averaged ground heat flux
+
+
 def get_Qg_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -238,6 +265,8 @@ def get_Qs_acc():
     return data
 
 # Accumulated subsurface runoff
+
+
 def get_Qsb_acc():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -248,6 +277,8 @@ def get_Qsb_acc():
     return data
 
 # Accumulated snowmelt
+
+
 def get_Qsm_acc():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -258,6 +289,8 @@ def get_Qsm_acc():
     return data
 
 # Time-averaged rainfall rate
+
+
 def get_Rainf_f_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -268,6 +301,8 @@ def get_Rainf_f_tavg():
     return data
 
 # Time-averaged total precipitation rate
+
+
 def get_Rainf_tavg():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -278,6 +313,8 @@ def get_Rainf_tavg():
     return data
 
 # Instantaneous root zone soil moisture
+
+
 def get_RootMoist_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -286,6 +323,7 @@ def get_RootMoist_inst():
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
     return data
+
 
 def get_SoilMoi0_10cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
@@ -297,6 +335,8 @@ def get_SoilMoi0_10cm_inst():
     return data
 
 # Instantaneous soil moisture in the 100-200 cm layer
+
+
 def get_SoilMoi100_200cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -307,6 +347,8 @@ def get_SoilMoi100_200cm_inst():
     return data
 
 # Instantaneous soil temperature in the 0-10 cm layer
+
+
 def get_SoilTMP0_10cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -317,6 +359,8 @@ def get_SoilTMP0_10cm_inst():
     return data
 
 # Instantaneous soil temperature in the 100-200 cm layer
+
+
 def get_SoilTMP100_200cm_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -327,6 +371,8 @@ def get_SoilTMP100_200cm_inst():
     return data
 
 # Instantaneous wind speed
+
+
 def get_Wind_f_inst():
     data = (ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
             .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
@@ -342,31 +388,54 @@ def print_era5_bands(model):
     print("Available bands: ", sample_image.bandNames().getInfo())
 
 
-# Combine all metrics into a single dictionary
-quality_of_life_metrics = {
-    'air_quality': get_AirQuality(),
-    'weather_quality': get_WeatherQuality(),
-    'water_quality': get_WaterQuality(),
-    'elevation': get_elev(),
-    'Surface_Temp': get_surface_temp(),
-    'Precipitation': get_precipitation(),
-    'Climate Data': get_era5(),
-    'AvgSurfT_inst': get_AvgSurfT_inst(),
-    'CanopInt_inst': get_CanopyWatContent_inst(),
-    'ECanop_tavg': get_ECanop_tavg(),
-    'ESoil_tavg': get_ESoil_tavg(),
-    'Evap_tavg': get_Evap_tavg(),
-    'LWdown_f_tavg': get_LWdown_f_tavg(),
-    'PotEvap_tavg': get_PotEvap_tavg(),
-    'Psurf_f_inst': get_Psurf_f_inst(),
-    'Qair_f_inst': get_Qair_f_inst(),
-    'Qg_tavg': get_Qg_tavg(),
-    'SoilMoi0_10cm_inst': get_SoilMoi0_10cm_inst(),
-    'SoilMoi100_200cm_inst': get_SoilMoi100_200cm_inst(),
-    'SoilTMP0_10cm_inst': get_SoilTMP0_10cm_inst(),
-    'SoilTMP100_200cm_inst': get_SoilTMP100_200cm_inst(),
-    'Wind_f_inst': get_Wind_f_inst()
-}
+def collect_metrics():
+    global quality_of_life_metrics  # Declare as global to modify it in this function
+
+    # Combine all metrics into a single dictionary
+    quality_of_life_metrics = {
+        'air_quality': get_AirQuality(),
+        'weather_quality': get_WeatherQuality(),
+        'water_quality': get_WaterQuality(),
+        'elevation': get_elev(),
+        'Surface_Temp': get_surface_temp(),
+        'Precipitation': get_precipitation(),
+        'Climate Data': get_era5(),
+        'AvgSurfT_inst': get_AvgSurfT_inst(),
+        'CanopInt_inst': get_CanopyWatContent_inst(),
+        'ECanop_tavg': get_ECanop_tavg(),
+        'ESoil_tavg': get_ESoil_tavg(),
+        'Evap_tavg': get_Evap_tavg(),
+        'LWdown_f_tavg': get_LWdown_f_tavg(),
+        'PotEvap_tavg': get_PotEvap_tavg(),
+        'Psurf_f_inst': get_Psurf_f_inst(),
+        'Qair_f_inst': get_Qair_f_inst(),
+        'Qg_tavg': get_Qg_tavg(),
+        'SoilMoi0_10cm_inst': get_SoilMoi0_10cm_inst(),
+        'SoilMoi100_200cm_inst': get_SoilMoi100_200cm_inst(),
+        'SoilTMP0_10cm_inst': get_SoilTMP0_10cm_inst(),
+        'SoilTMP100_200cm_inst': get_SoilTMP100_200cm_inst(),
+        'Wind_f_inst': get_Wind_f_inst()
+    }
+
+
+# Create a list of functions you want to run in parallel
+functions_to_run = [get_AirQuality, get_WeatherQuality, get_WaterQuality, get_elev,
+                    get_surface_temp, get_precipitation, get_era5]  # Add more functions as needed
+
+# Create an empty dictionary to hold the results
+quality_of_life_metrics = {}
+
+# Create threads
+threads = []
+for func in functions_to_run:
+    thread = threading.Thread(target=func)
+    threads.append(thread)
+    thread.start()
+
+# Wait for all threads to finish
+for thread in threads:
+    thread.join()
+
 
 # Save as a JSON file
 with open('quality_of_life_metrics.json', 'w') as f:
