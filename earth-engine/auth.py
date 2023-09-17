@@ -10,10 +10,7 @@ name = ''
 
 
 def sign_up():
-    print("lol")
-
-    # Initialize the webcam
-    cap = cv2.VideoCapture(1)
+    print("Signing Up")
 
     try:
         with open('face_data.dat', 'rb') as f:
@@ -24,21 +21,16 @@ def sign_up():
         known_face_encodings = []
         known_face_labels = []
 
-    # Check if the webcam is opened correctly
-    if not cap.isOpened():
-        print("Could not open webcam")
-        exit()
-
     # Warm-up loop to allow the camera to adjust
     for i in range(10):
-        ret, frame = cap.read()
+        ret, frame = cv2.imread()
         if not ret:
             print("Failed to capture image")
             exit()
         time.sleep(0.1)  # Sleep for 100 milliseconds
 
     # Capture a single frame
-    ret, frame = cap.read()
+    ret, frame = cv2.read()
 
     if frame is not None:
         # Find all the faces and their encodings in the current frame
@@ -60,7 +52,7 @@ def sign_up():
                         'labels': known_face_labels}, f)
             print("Saved the Face on file!")
             f.close()
-            cap.release()
+            cv2.release()
     else:
         print("Signup Incomplete")
 
@@ -68,7 +60,6 @@ def sign_up():
     if not ret:
         print("Failed to capture image")
         exit()
-
 
 def log_in(image):
     try:
@@ -89,7 +80,6 @@ def log_in(image):
         time.sleep(0.1)  # Sleep for 100 milliseconds
 
     # Capture frame
-
     ret, frame = cv2.imread()
     if frame is not None:
         # Find all the faces and their encodings in the current frame
@@ -122,68 +112,11 @@ def log_in(image):
     else:
         print("Waiting for webcam...")
 
-
-def sign_in(image):
-    cap = cv2.VideoCapture(1)
-    try:
-        with open('face_data.dat', 'rb') as f:
-            known_face_data = pickle.load(f)
-        known_face_encodings = known_face_data['encodings']
-        known_face_labels = known_face_data['labels']
-    except FileNotFoundError:
-        known_face_encodings = []
-        known_face_labels = []
-
-    # Warm-up loop to allow the camera to adjust
-    for i in range(10):
-        ret, frame = cap.read()
-        if not ret:
-            print("Failed to capture image")
-            exit()
-        time.sleep(0.1)  # Sleep for 100 milliseconds
-
-    # Capture frame
-
-    ret, frame = cap.read()
-    if frame is not None:
-        # Find all the faces and their encodings in the current frame
-        face_locations = face_recognition.face_locations(frame)
-        face_encodings = face_recognition.face_encodings(
-            frame, face_locations)
-
-        # Initialize matches as an empty list
-        matches = []
-
-        # Loop through each face found in the frame
-        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
-            # Compare the current face encoding with the known face encodings
-            matches = face_recognition.compare_faces(
-                known_face_encodings, face_encoding)
-
-        # If a match is found, display a welcome message and stop capturing video
-        if True in matches:
-            name = known_face_labels[matches.index(True)]
-            print("Authentication successful! Welcome, " + name + "!")
-            # cv2.putText(frame, "Authentication successful! Welcome, " + label + "!",
-            #             (left-10, bottom+25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-            cap.release()
-            cv2.destroyAllWindows()
-            return 1
-        else:
-            print("Face Not Found!\nTry Again!")
-            time.sleep(0.5)
-
-    else:
-        print("Waiting for webcam...")
-
-
 def clear_face_data():
     os.remove('face_data.dat')
 
 
 # Verbwire
-
-
 def mint_custom_nft(data, username):
 
     data = 'face_data.dat'
@@ -243,8 +176,6 @@ def mint_custom_nft(data, username):
     return response.text
 
 # Verbwire
-
-
 def get_nft_attributes():
     url = "https://api.verbwire.com/v1/nft/data/owned?walletAddress=0x717aeB89048f10061C0dCcdEB2592a60bA4F1a79&chain=goerli"
     headers = {
@@ -273,7 +204,7 @@ def get_nft_attributes():
             token_attributes.appends(main_resp['attributes'])
     return token_attributes
 
-
+# Verbwire - still in production
 def mint_nft(data):
     import requests
 

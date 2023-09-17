@@ -1,9 +1,15 @@
+import io
 import threading
+from tkinter import Image
+import cv2
 import ee
 import inspect
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
-
+import numpy as np
+import auth
+import base64
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -713,7 +719,7 @@ def main_func(lat, long):
 def lol():
     lat = request.args['lat']
     long = request.args['long']
-
+    # Fall back call
     try:
         b = main_func(float(lat), float(long))
     except Exception as e:
@@ -721,6 +727,29 @@ def lol():
         b = sample_weather
     return b
 
+
+@app.route("/im_size", methods=["POST"])
+def process_image():
+    try:
+        print(1)
+        base64_image = request.json['image']
+        print(2)
+        base64_data = base64_image.split(',')
+        print(3)
+        img_data = base64.b64decode(base64_data[1])
+        print(4)
+        image_np = np.frombuffer(img_data, dtype = np.uint8)
+        print(5)
+        img = cv2.imdecode(image_np, flags = cv2.IMREAD_COLOR)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        print(6)
+        img = Image.fromarray(img.astype('uint8'))
+
+        img.show()
+        return jsonify({'msg': 'success', 'size': [img.width, img.height]})
+    except Exception as e:
+        print(e)
+        return jsonify({'msg': 'error', 'error': str(e)})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)
