@@ -87,6 +87,7 @@ sample_weather = '''
 }
 '''
 
+
 def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
     """Creates an AOI for the analysis."""
     aoi = ee.Geometry.Polygon([
@@ -98,6 +99,11 @@ def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
     ])
     return aoi
 
+
+# Declare as global to modify it in this function
+global quality_of_life_metrics
+quality_of_life_metrics = {}
+lock = threading.Lock()
 
 # Define the Area of Interest (AOI)
 global aoi
@@ -135,13 +141,15 @@ def get_AirQuality():
 
     # Combine them into a single dictionary
     combined_data = {
-        'air_quality': {
-            **no2,
-            **o3,
-            **so2,
-            **co
-        }
+        **no2,
+        **o3,
+        **so2,
+        **co
+
     }
+    with lock:
+        quality_of_life_metrics.update(combined_data)
+
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
     return combined_data
@@ -155,6 +163,10 @@ def get_WeatherQuality():
                        .select('Tair_f_inst')
                        .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
                        .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(weather_quality)
+
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
     return weather_quality
@@ -166,6 +178,10 @@ def get_WaterQuality():
                      .normalizedDifference(['B3', 'B5'])
                      .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9)
                      .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(water_quality)
+
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
     return water_quality
@@ -174,6 +190,9 @@ def get_WaterQuality():
 def get_elev():
     elevation = ee.Image('USGS/SRTMGL1_003').reduceRegion(
         reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9).getInfo()
+    
+    with lock:
+        quality_of_life_metrics.update(elevation)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -187,6 +206,9 @@ def get_surface_temp():
                     .select('LST_Day_1km')
                     .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=1000, maxPixels=1e9)
                     .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(surface_temp)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -202,6 +224,9 @@ def get_precipitation():
                      .select('precipitation')
                      .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
                      .getInfo())  # Get the mean precipitation in the AOI
+    
+    with lock:
+        quality_of_life_metrics.update(precipitation)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -217,6 +242,9 @@ def get_era5():
                  .select(['mean_2m_air_temperature', 'minimum_2m_air_temperature', 'maximum_2m_air_temperature', 'dewpoint_2m_temperature', 'total_precipitation', 'surface_pressure', 'mean_sea_level_pressure', 'u_component_of_wind_10m', 'v_component_of_wind_10m'])
                  .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
                  .getInfo())  # Get the average values within the AOI
+    
+    with lock:
+        quality_of_life_metrics.update(era5_data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -230,6 +258,9 @@ def get_AvgSurfT_inst():
             .select(['AvgSurfT_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -243,6 +274,9 @@ def get_Wind_f_inst():
             .select(['Wind_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -256,6 +290,9 @@ def get_CanopyWatContent_inst():
             .select(['CanopInt_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -271,6 +308,9 @@ def get_ECanop_tavg():
             .select(['ECanop_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -286,6 +326,9 @@ def get_ESoil_tavg():
             .select(['ESoil_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -301,6 +344,9 @@ def get_Evap_tavg():
             .select(['Evap_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -316,6 +362,9 @@ def get_LWdown_f_tavg():
             .select(['LWdown_f_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -331,6 +380,9 @@ def get_PotEvap_tavg():
             .select(['PotEvap_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -346,6 +398,9 @@ def get_Psurf_f_inst():
             .select(['Psurf_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -361,6 +416,9 @@ def get_Qair_f_inst():
             .select(['Qair_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -376,6 +434,9 @@ def get_Qg_tavg():
             .select(['Qg_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -390,6 +451,9 @@ def get_Qs_acc():
             .select(['Qs_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -405,6 +469,9 @@ def get_Qsb_acc():
             .select(['Qsb_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -420,6 +487,9 @@ def get_Qsm_acc():
             .select(['Qsm_acc'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -435,6 +505,9 @@ def get_Rainf_f_tavg():
             .select(['Rainf_f_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -450,6 +523,9 @@ def get_Rainf_tavg():
             .select(['Rainf_tavg'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -465,6 +541,9 @@ def get_RootMoist_inst():
             .select(['RootMoist_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -478,6 +557,9 @@ def get_SoilMoi0_10cm_inst():
             .select(['SoilMoi0_10cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -493,6 +575,9 @@ def get_SoilMoi100_200cm_inst():
             .select(['SoilMoi100_200cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -508,6 +593,9 @@ def get_SoilTMP0_10cm_inst():
             .select(['SoilTMP0_10cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -523,6 +611,9 @@ def get_SoilTMP100_200cm_inst():
             .select(['SoilTMP100_200cm_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
@@ -538,59 +629,65 @@ def get_Wind_f_inst():
             .select(['Wind_f_inst'])
             .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
             .getInfo())
+    
+    with lock:
+        quality_of_life_metrics.update(data)
 
     print(
         f"The name of this function is {inspect.currentframe().f_code.co_name}.")
     return data
 
 
-def print_era5_bands(model):
-    sample_image = ee.Image(ee.ImageCollection(model).first())
-    print("Available bands: ", sample_image.bandNames().getInfo())
+# def print_era5_bands(model):
+#     sample_image = ee.Image(ee.ImageCollection(model).first())
+#     print("Available bands: ", sample_image.bandNames().getInfo())
 
 
 def collect_metrics():
-    global quality_of_life_metrics  # Declare as global to modify it in this function
 
     # Combine all metrics into a single dictionary
-    quality_of_life_metrics = {
-        'air_quality': get_AirQuality(),
-        'weather_quality': get_WeatherQuality(),
-        'water_quality': get_WaterQuality(),
-        'elevation': get_elev(),
-        'Surface_Temp': get_surface_temp(),
-        'Precipitation': get_precipitation(),
-        'Climate Data': get_era5(),
-        'AvgSurfT_inst': get_AvgSurfT_inst(),
-        'CanopInt_inst': get_CanopyWatContent_inst(),
-        'ECanop_tavg': get_ECanop_tavg(),
-        'ESoil_tavg': get_ESoil_tavg(),
-        'Evap_tavg': get_Evap_tavg(),
-        'LWdown_f_tavg': get_LWdown_f_tavg(),
-        'PotEvap_tavg': get_PotEvap_tavg(),
-        'Psurf_f_inst': get_Psurf_f_inst(),
-        'Qair_f_inst': get_Qair_f_inst(),
-        'Qg_tavg': get_Qg_tavg(),
-        'SoilMoi0_10cm_inst': get_SoilMoi0_10cm_inst(),
-        'SoilMoi100_200cm_inst': get_SoilMoi100_200cm_inst(),
-        'Wind_f_inst': get_Wind_f_inst()
-    }
+    quality_of_life_metrics = [
+        get_AirQuality(),
+        get_WeatherQuality(),
+        get_WaterQuality(),
+        get_elev(),
+        get_surface_temp(),
+        get_precipitation(),
+        get_era5(),
+        get_AvgSurfT_inst(),
+        get_CanopyWatContent_inst(),
+        get_ECanop_tavg(),
+        get_ESoil_tavg(),
+        get_Evap_tavg(),
+        get_LWdown_f_tavg(),
+        get_PotEvap_tavg(),
+        get_Psurf_f_inst(),
+        get_Qair_f_inst(),
+        get_Qg_tavg(),
+        get_SoilMoi0_10cm_inst(),
+        get_SoilMoi100_200cm_inst(),
+        get_Wind_f_inst()
+    ]
+
+    return quality_of_life_metrics
 
 
 def main_func(lat, long):
     """Main function."""
 
     # Create a list of functions you want to run in parallel
-    functions_to_run = [get_AirQuality, get_WeatherQuality, get_WaterQuality, get_elev,
-                        get_surface_temp, get_precipitation, get_era5, get_AvgSurfT_inst,
-                        get_CanopyWatContent_inst, get_ECanop_tavg, get_ESoil_tavg, get_Evap_tavg,
-                        get_LWdown_f_tavg, get_PotEvap_tavg, get_Psurf_f_inst, get_Qair_f_inst, get_Qg_tavg,
-                        get_SoilMoi0_10cm_inst, get_SoilMoi100_200cm_inst, get_Wind_f_inst]  # Add more functions as needed
-
-    collect_metrics()
+    functions_to_run = [
+        get_AirQuality, get_WeatherQuality, get_WaterQuality, get_elev,
+        get_surface_temp, get_precipitation, get_era5, get_AvgSurfT_inst,
+        get_CanopyWatContent_inst, get_ECanop_tavg, get_ESoil_tavg, get_Evap_tavg,
+        get_LWdown_f_tavg, get_PotEvap_tavg, get_Psurf_f_inst, get_Qair_f_inst, get_Qg_tavg,
+        get_SoilMoi0_10cm_inst, get_SoilMoi100_200cm_inst, get_Wind_f_inst
+    ]  # Add more functions as needed
 
     global aoi
     aoi = def_aoi(lat, long)
+
+    # final_answer = collect_metrics()
 
     # Create threads
     threads = []
@@ -612,13 +709,13 @@ def lol():
     lat = request.args['lat']
     long = request.args['long']
 
-    try: 
+    try:
         b = main_func(float(lat), float(long))
-    except:
-        print("Exception Occured!")
+    except Exception as e:
+        print(f"An exception occurred: {e}")
         b = sample_weather
     return b
 
 
 if __name__ == "__main__":
-    app.run(host = '0.0.0.0', port = 8000)
+    app.run(host='0.0.0.0', port=8000)
