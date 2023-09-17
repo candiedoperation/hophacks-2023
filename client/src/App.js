@@ -30,12 +30,29 @@ import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import LoginPage from './integrals/LoginPage';
 
+const AuthRequired = (props) => {
+  return (
+    (sessionStorage.getItem("auth") == "true") ? props.children : <Navigate to="/login" />
+  );
+}
+
+const PreAuthenticated = (props) => {
+  return (
+    (sessionStorage.getItem("auth") == "true") ? <Navigate to="/" /> : props.children
+  );
+}
+
 const App = () => {
   const [themeMode, setThemeMode] = React.useState(getCurrentTheme());
   const [appTheme, setAppTheme] = React.useState(getCurrentThemeComponent())
 
   React.useEffect(() => {
     setAppTheme(getCurrentThemeComponent());
+
+    /* Update Auth Status */
+    if (sessionStorage.getItem("auth") == null) {
+      sessionStorage.setItem("auth", "false");
+    }
   }, [themeMode])
 
   const toggleThemeWrapper = () => {
@@ -47,8 +64,8 @@ const App = () => {
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
       <Routes>
-        <Route path='/*' element={<DashboardLayout toggleTheme={toggleThemeWrapper} />} />
-        <Route path='/login' element={<LoginPage />} />
+        <Route path='/*' element={<AuthRequired><DashboardLayout toggleTheme={toggleThemeWrapper} /></AuthRequired>} />
+        <Route path='/login' element={<PreAuthenticated><LoginPage /></PreAuthenticated>} />
       </Routes>
     </ThemeProvider>
   );
