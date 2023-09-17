@@ -22,7 +22,7 @@ def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
 
 
 # Define the Area of Interest (AOI)
-aoi = def_aoi(27.9881, 86.9250)
+aoi = def_aoi(28.657905, 77.210369)
 
 
 def get_AirQuality():
