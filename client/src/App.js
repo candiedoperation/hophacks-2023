@@ -28,6 +28,7 @@ import { getCurrentTheme, getCurrentThemeComponent, toggleTheme } from './middle
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
+import LoginPage from './integrals/LoginPage';
 
 const App = () => {
   const [themeMode, setThemeMode] = React.useState(getCurrentTheme());
@@ -47,6 +48,7 @@ const App = () => {
       <CssBaseline />
       <Routes>
         <Route path='/*' element={<DashboardLayout toggleTheme={toggleThemeWrapper} />} />
+        <Route path='/login' element={<LoginPage />} />
       </Routes>
     </ThemeProvider>
   );

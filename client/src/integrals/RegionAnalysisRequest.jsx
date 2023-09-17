@@ -21,12 +21,9 @@ const RegionAnalysisRequest = () => {
                 height: '500px',
                 width: { xs: '90%', md: '60%', lg: '50%' }
             }}>
-                <Box sx={{ margin: '10px' , display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <SatelliteAlt sx={{ marginRight: '10px' }} />
-                    <Typography sx={{ fontWeight: '500' }} variant='h5'>Analyze a Location</Typography>
-                </Box>
-                <Divider />
-                <Box sx={{ width: '100%', height: '85%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ margin: '10px', height: '100%', display: 'flex', alignItems: 'center', width: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <SatelliteAlt sx={{ width: '80px', height: '80px', marginBottom: '10px' }} />
+                    <Typography sx={{ fontWeight: '500', marginBottom: '15px' }} variant='h5'>Analyze a Location</Typography>
                     <TextField value={latText} onChange={(e) => { setLatText(e.target.value); }} placeholder='Latitude' sx={{ width: '80%', padding: '5px' }} />
                     <TextField value={lngText} onChange={(e) => { setLngText(e.target.value); }} placeholder='Longitude' sx={{ width: '80%', padding: '5px' }} />
                     <Button
