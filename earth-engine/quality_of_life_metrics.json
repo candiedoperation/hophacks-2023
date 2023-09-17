@@ -1,11 +1,31 @@
 {
     "air_quality": {
-        "NO2_column_number_density": 8.268149909384242e-05
+        "NO2_column_number_density": 5.249535941113327e-05
     },
     "weather_quality": {
-        "Tair_f_inst": 296.5404391582391
+        "Tair_f_inst": 270.8774719238281
     },
     "water_quality": {
-        "nd": -0.5045204643659761
+        "nd": null
+    },
+    "elevation": {
+        "elevation": 8087.277110818641
+    },
+    "Surface_Temp": {
+        "LST_Day_1km": 13128.419216485372
+    },
+    "Precipitation": {
+        "precipitation": 0.12568984925746918
+    },
+    "Climate Data": {
+        "dewpoint_2m_temperature": 255.794677734375,
+        "maximum_2m_air_temperature": 271.92327880859375,
+        "mean_2m_air_temperature": 261.8616943359375,
+        "mean_sea_level_pressure": 102177.0078125,
+        "minimum_2m_air_temperature": 250.8478240966797,
+        "surface_pressure": 51887.234375,
+        "total_precipitation": 0.05814605951309204,
+        "u_component_of_wind_10m": 0.32632821798324585,
+        "v_component_of_wind_10m": 0.16790242493152618
     }
 }

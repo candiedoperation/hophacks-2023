@@ -22,7 +22,7 @@ def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
 
 
 # Define the Area of Interest (AOI)
-aoi = def_aoi()
+aoi = def_aoi(27.9881, 86.9250)
 
 
 def tifftopng(file):
@@ -96,18 +96,60 @@ def get_WaterQuality():
 
 def get_elev():
     elevation = ee.Image('USGS/SRTMGL1_003').reduceRegion(
-        reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9).getInfo()['elevation']
+        reducer=ee.Reducer.mean(), geometry=aoi, scale=30, maxPixels=1e9).getInfo()
 
     return elevation
+
+
+def get_surface_temp():
+    surface_temp = (ee.ImageCollection('MODIS/006/MOD11A1')
+                    .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+                    .mean()
+                    .select('LST_Day_1km')
+                    .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=1000, maxPixels=1e9)
+                    .getInfo())
+    return surface_temp
+
+
+def get_precipitation():
+    precipitation = (ee.ImageCollection('NASA/GPM_L3/IMERG_MONTHLY_V06')
+                     # Filter by date
+                     .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+                     .mean()  # Take the mean over the time period
+                     # Select the 'precipitation' band
+                     .select('precipitation')
+                     .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
+                     .getInfo())  # Get the mean precipitation in the AOI
+    return precipitation
+
+
+def get_era5():
+    era5_data = (ee.ImageCollection('ECMWF/ERA5/MONTHLY')
+                 # Filter by date
+                 .filterDate(ee.Date('2020-01-01'), ee.Date('2020-12-31'))
+                 .mean()  # Take the mean over the time period
+                 # Select specific bands
+                 .select(['mean_2m_air_temperature', 'minimum_2m_air_temperature', 'maximum_2m_air_temperature', 'dewpoint_2m_temperature', 'total_precipitation', 'surface_pressure', 'mean_sea_level_pressure', 'u_component_of_wind_10m', 'v_component_of_wind_10m'])
+                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=aoi, scale=10000, maxPixels=1e9)
+                 .getInfo())  # Get the average values within the AOI
+    return era5_data
+
+
+def print_era5_bands():
+    sample_image = ee.Image(ee.ImageCollection('ECMWF/ERA5/MONTHLY').first())
+    print("Available bands: ", sample_image.bandNames().getInfo())
 
 
 # Combine all metrics into a single dictionary
 quality_of_life_metrics = {
     'air_quality': get_AirQuality(),
     'weather_quality': get_WeatherQuality(),
-    'water_quality': get_WaterQuality()
+    'water_quality': get_WaterQuality(),
+    'elevation': get_elev(),
+    'Surface_Temp': get_surface_temp(),
+    'Precipitation': get_precipitation(),
+    'Climate Data': get_era5()
 }
-
 
 # Save as a JSON file
 with open('quality_of_life_metrics.json', 'w') as f:
