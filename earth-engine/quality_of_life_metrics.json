@@ -1,6 +1,11 @@
 {
     "air_quality": {
-        "NO2_column_number_density": 5.249535941113327e-05
+        "air_quality": {
+            "NO2_column_number_density": 5.249535941113327e-05,
+            "O3_column_number_density": 0.12522732622115912,
+            "SO2_column_number_density": 0.00014900659350071204,
+            "CO_column_number_density": 0.015277780842246652
+        }
     },
     "weather_quality": {
         "Tair_f_inst": 270.8774719238281
@@ -27,5 +32,50 @@
         "total_precipitation": 0.05814605951309204,
         "u_component_of_wind_10m": 0.32632821798324585,
         "v_component_of_wind_10m": 0.16790242493152618
+    },
+    "AvgSurfT_inst": {
+        "AvgSurfT_inst": 259.4488220214844
+    },
+    "CanopInt_inst": {
+        "CanopInt_inst": 0.16166917979717255
+    },
+    "ECanop_tavg": {
+        "ECanop_tavg": 0.05379452183842659
+    },
+    "ESoil_tavg": {
+        "ESoil_tavg": 0.40476369857788086
+    },
+    "Evap_tavg": {
+        "Evap_tavg": 9.473675163462758e-06
+    },
+    "LWdown_f_tavg": {
+        "LWdown_f_tavg": 220.95387268066406
+    },
+    "PotEvap_tavg": {
+        "PotEvap_tavg": 26.776226043701172
+    },
+    "Psurf_f_inst": {
+        "Psurf_f_inst": 52213.4453125
+    },
+    "Qair_f_inst": {
+        "Qair_f_inst": 0.00331303128041327
+    },
+    "Qg_tavg": {
+        "Qg_tavg": -0.056411489844322205
+    },
+    "SoilMoi0_10cm_inst": {
+        "SoilMoi0_10cm_inst": 42.946720123291016
+    },
+    "SoilMoi100_200cm_inst": {
+        "SoilMoi100_200cm_inst": 439
+    },
+    "SoilTMP0_10cm_inst": {
+        "SoilTMP0_10cm_inst": 266.11798095703125
+    },
+    "SoilTMP100_200cm_inst": {
+        "SoilTMP100_200cm_inst": 266.1659240722656
+    },
+    "Wind_f_inst": {
+        "Wind_f_inst": 2.1224210262298584
     }
 }
