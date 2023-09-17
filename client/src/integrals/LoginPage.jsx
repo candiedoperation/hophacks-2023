@@ -1,13 +1,12 @@
 import * as React from 'react';
-import * as faceapi from 'face-api.js';
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import axios from 'axios';
 
 const LoginPage = () => {
     const [capturedImage, setCapturedImage] = React.useState(null);
 
     React.useEffect(() => {
-        
+        initCapture();
     }, []);
 
     const uploadFace = () => {
@@ -15,22 +14,21 @@ const LoginPage = () => {
             .post('http://10.195.150.165:8000/im_size', { image: capturedImage })
             .then((res) => {
                 console.log(res.data);
-                console.log(capturedImage);
             })
     };
 
-    const handleCapture = async () => {
+    const initCapture = async () => {
         try {
             // Access the user's camera
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
             // Create a video element to display the camera stream
-            const video = document.createElement('video');
+            const video = document.getElementById("facestream");
             video.srcObject = stream;
             video.play();
 
             // Wait for the video to be ready
-            video.onloadedmetadata = async () => {
+            /*video.onloadedmetadata = async () => {
                 // Create a canvas element to capture the image
                 const canvas = document.createElement('canvas');
                 canvas.width = video.videoWidth;
@@ -53,21 +51,26 @@ const LoginPage = () => {
 
                 // Run Face Detect
                 uploadFace();
-            };
+            };*/
         } catch (error) {
             console.error('Error capturing image:', error);
         }
     };
 
     return (
-        <Box sx={{ width: '100%', height: '100%' }}>
+        <>
+            <Box sx={{ bgcolor: 'green', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'column', width: '40%', height: '70%' }}>
+                    <Box sx={{ overflow: 'hidden' }}>
+                        <video id="facestream" />
+                    </Box>
+                </Paper>
+            </Box>
             <div>
-                <button onClick={handleCapture}>Capture Face</button>
+                <button onClick={initCapture}>Capture Face</button>
                 {capturedImage && <img src={capturedImage} alt="Captured Face" />}
-                {/* Your React component rendering code */}
-                <canvas id="reflay" />
             </div>
-        </Box>
+        </>
     )
 }
 
