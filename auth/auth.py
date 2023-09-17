@@ -326,3 +326,5 @@ def menu():
             clear_face_data()
         elif (int(choice) == 4):
             mint_nft('face_data.dat')
+
+menu()
