@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Card, CardContent, CardHeader } from "@mui/material";
+import { Card, CardContent, CardHeader, Divider } from "@mui/material";
 
 const GraphCardRegion = (props) => {
-    React.useEffect(() => { console.log(props); });
     return(
-        <Card sx={{ flexGrow: 1, margin: '5px', height: '300px' }}>
+        <Card sx={{ flexGrow: 1, margin: '5px', height: '300px', minWidth: '300px' }}>
             <CardHeader title={props.title} />
-            <CardContent sx={{ padding: '0px', height: 'calc(100% - 64px)' }}>
+            <Divider />
+            <CardContent sx={{ marginTop: props.mt ? '0px' : '10px', paddingBottom: props.pb ? '0px !important' : '24px', padding: '0px', height: 'calc(100% - 64px)' }}>
                 {props.children}
             </CardContent>
         </Card>

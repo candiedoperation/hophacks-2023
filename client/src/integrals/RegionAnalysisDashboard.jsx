@@ -5,6 +5,9 @@ import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import AirMoleculesRegion from '../components/AirMoleculesRegion';
 import axios from 'axios';
 import GraphCardSkeleton from '../components/GraphCardSkeleton';
+import TemperatureRangeRegion from '../components/TemperatureRangeRegion';
+import DataCardRegion from '../components/DataCardRegion';
+import MapCardRegion from '../components/MapCardRegion';
 
 const RegionAnalysisDashboard = (props) => {
     const params = useParams();
@@ -44,10 +47,19 @@ const RegionAnalysisDashboard = (props) => {
     return (
         <Box sx={{ height: "calc(100% - 125px)" }}>
             <Alert sx={{ margin: '10px' }} severity='info'>Viewing Information for <strong>{`${intrestLat}°, ${intrestLong}°`}</strong> Latitudes and Longitudes</Alert>
-            <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%'}}>
-                <Box sx={{ margin: '10px', display: 'flex', flexWrap: 'wrap', width: '60%', height: '100%' }}>
-                    { (isLoadingG) ? <GraphCardSkeleton /> : <></> }
-                    <AirMoleculesRegion data={graphData.air_quality} />
+            <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%' }}>
+                <Box sx={{ margin: '10px', display: 'flex', flexWrap: 'wrap', width: '60%', height: '100%', overflowY: 'auto' }}>
+                    {
+                        (isLoadingG) ? <GraphCardSkeleton /> :
+                            <>
+                                <MapCardRegion lat={intrestLat} lng={intrestLong} />
+                                <AirMoleculesRegion data={graphData.air_quality} />
+                                <TemperatureRangeRegion data={[(graphData.maximum_2m_air_temperature - 273), (graphData.mean_2m_air_temperature - 273), (graphData.minimum_2m_air_temperature - 273)]} />
+                                <DataCardRegion primary={graphData.elevation.toFixed(2)} secondary="Meters" title="Elevation" />
+                                <DataCardRegion primary={graphData.SoilMoi0_10cm_inst.toFixed(2)} secondary="Wf/v" title="Soil Moisture" />
+                                <DataCardRegion primary={graphData.precipitation.toFixed(2)*100} secondary="mm" title="Precipitation" />
+                            </>
+                    }
                 </Box>
                 <Divider flexItem orientation='vertical' />
                 <Box sx={{ height: '100%', width: '40%' }}>
