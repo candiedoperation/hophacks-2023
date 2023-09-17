@@ -23,17 +23,20 @@
 */
 
 import * as React from 'react';
-import { Autocomplete, Box, Divider, Grid, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Divider, Grid, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import { getCurrentTheme } from '../middleware/AppThemeController';
 import axios from 'axios';
 import ExploreIcon from '@mui/icons-material/Explore';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import SatelliteAltIcon from '@mui/icons-material/SatelliteAlt';
 import { useNavigate } from 'react-router-dom';
 
 const WorldMapDashboard = (props) => {
     const navigate = useNavigate();
+    const mapRef = React.useRef();
     const [regions, setRegions] = React.useState([]);
+    const [selectedLL, setSelectedLL] = React.useState([-33.8688, 151.2093]);
     const [regionText, setRegionText] = React.useState("");
 
     const updateLoc = (regionSearch) => {
@@ -45,14 +48,35 @@ const WorldMapDashboard = (props) => {
             });
     }
 
+    React.useEffect(() => {
+        if (mapRef.current) {
+            mapRef.current.on('click', (e) => {
+                /* Refine Location */
+                setSelectedLL((ll) => [e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6)]);
+            });
+        }
+    }, [mapRef.current]);
+    
+    React.useEffect(() => {
+        if (mapRef.current) {
+            mapRef.current.setView(selectedLL, mapRef.current.getZoom());
+        }
+    }, [selectedLL]);
+
+    const analyzeRegion = () => {
+        navigate(`/region/${selectedLL[0]},${selectedLL[1]}`)
+    }
+
     return (
         <Box sx={{ height: '100%', display: 'flex' }}>
             <Box sx={{ height: '100%', flexGrow: 1, filter: (getCurrentTheme() == "light") ? "" : "invert(1) hue-rotate(210deg)" }}>
-                <MapContainer style={{ height: '100%' }} center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+                <MapContainer ref={mapRef} style={{ height: '100%' }} center={selectedLL} zoom={13} scrollWheelZoom={true}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
+
+                    <Marker position={selectedLL}></Marker>
                 </MapContainer>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '300px', boxShadow: 8, zIndex: 1000 }}>
@@ -61,10 +85,11 @@ const WorldMapDashboard = (props) => {
                     <Typography sx={{ fontWeight: '500' }} variant='h5'>Navigator</Typography>
                 </Box>
                 <Divider />
+                <Alert sx={{ margin: '10px' }} severity='info'>Select a Region, you can refine your location by pinning a point on the map.</Alert>
                 <Autocomplete
                     sx={{ width: "100%", padding: '10px' }}
                     options={regions}
-                    getOptionLabel={(option) => typeof option === 'string' ? option : `${option.name}, ${option.country_code}`}
+                    getOptionLabel={(option) => typeof option === 'string' ? option : `${option.name}, ${option.country}`}
                     filterOptions={(x) => x}
                     noOptionsText="No Regions"
                     filterSelectedOptions
@@ -77,7 +102,7 @@ const WorldMapDashboard = (props) => {
                     renderOption={(props, option) => {
                         return (
                             <li {...props}>
-                                <ListItem onClick={() => { navigate(`/region/${option.latitude},${option.longitude}`) }}>
+                                <ListItem onClick={() => { setSelectedLL((ll) => [option.latitude, option.longitude]) }}>
                                     <ListItemIcon><LocationOnIcon sx={{ color: 'text.secondary' }} /></ListItemIcon>
                                     <ListItemText primary={`${option.name}, ${option.country}`} secondary={`${option.latitude}°, ${option.longitude}°`} />
                                 </ListItem>
@@ -85,6 +110,15 @@ const WorldMapDashboard = (props) => {
                         );
                     }}
                 />
+                <Box sx={{ padding: '0px 10px 0px 10px', display: 'flex', alignItems: 'center', width: '100%' }}>
+                    <SatelliteAltIcon sx={{ height: '56px', marginRight: '10px' }} />
+                    <Typography sx={{ fontWeight: '500' }} variant='h5'>Regional Analysis</Typography>
+                </Box>
+                <Divider />
+                <Alert sx={{ margin: '10px' }} severity='info'>
+                    {`Selected Latitudes, Longitudes are ${selectedLL[0]}° and ${selectedLL[1]}°`}
+                </Alert>
+                <Button onClick={() => { analyzeRegion(); }} sx={{ margin: '0px 10px 10px 10px' }} variant='contained'>Analyze Region</Button>
             </Box>
         </Box>
     );
