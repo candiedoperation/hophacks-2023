@@ -252,7 +252,7 @@ def menu():
         if (int(choice) == 1):
             sign_up()
         elif (int(choice) == 2):
-            sign_in()
+            log_in()
         elif (int(choice) == 3):
             clear_face_data()
         elif (int(choice) == 4):
