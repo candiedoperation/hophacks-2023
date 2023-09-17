@@ -18,11 +18,11 @@ const RegionAnalysisDashboard = (props) => {
     const [intrestLat, setInterestLat] = React.useState(null);
     const [intrestLong, setInterestLong] = React.useState(null);
 
-    React.useEffect(() => {
+    React.useEffect(() => { 
         let latlong = params.loc.split(",");
         setInterestLat(latlong[0]);
         setInterestLong(latlong[1]);
-    }, []);
+    }, [params]);
 
     React.useEffect(() => {
         if (intrestLat != null && intrestLong != null) {
@@ -34,7 +34,7 @@ const RegionAnalysisDashboard = (props) => {
                 });
 
             axios
-                .get(`http://10.195.150.165:8000?lat=-33.8688&long=151.2093`)
+                .get(`http://10.195.150.165:8000?lat=${intrestLat}&long=${intrestLong}`)
                 .then((res) => {
                     setTimeout(() => {
                         setIsLoadingG(false);

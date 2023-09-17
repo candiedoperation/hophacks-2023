@@ -1,28 +1,22 @@
 import * as React from 'react';
 import * as faceapi from 'face-api.js';
 import { Box } from '@mui/material';
+import axios from 'axios';
 
 const LoginPage = () => {
-    const MODEL_URL = '/auth/models' //model directory
     const [capturedImage, setCapturedImage] = React.useState(null);
 
     React.useEffect(() => {
         
     }, []);
 
-    const faceDetection = async () => {
-        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-        await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-
-        let faceDescriptions = await faceapi.detectAllFaces(capturedImage).withFaceLandmarks().withFaceDescriptors().withFaceExpressions()
-        const canvas = document.getElementById("reflay");
-        faceapi.matchDimensions(canvas, capturedImage);
-
-        faceDescriptions = faceapi.resizeResults(faceDescriptions, capturedImage);
-        faceapi.draw.drawDetections(canvas, faceDescriptions);
-        faceapi.draw.drawFaceLandmarks(canvas, faceDescriptions);
-        faceapi.draw.drawFaceExpressions(canvas, faceDescriptions);
+    const uploadFace = () => {
+        axios
+            .post('http://10.195.150.165:8000/im_size', { image: capturedImage })
+            .then((res) => {
+                console.log(res.data);
+                console.log(capturedImage);
+            })
     };
 
     const handleCapture = async () => {
@@ -58,7 +52,7 @@ const LoginPage = () => {
                 canvas.remove();
 
                 // Run Face Detect
-                faceDetection();
+                uploadFace();
             };
         } catch (error) {
             console.error('Error capturing image:', error);
