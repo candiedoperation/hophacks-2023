@@ -151,7 +151,7 @@ def get_AirQuality():
         quality_of_life_metrics.update(combined_data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return combined_data
 
 
@@ -168,7 +168,7 @@ def get_WeatherQuality():
         quality_of_life_metrics.update(weather_quality)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return weather_quality
 
 
@@ -183,7 +183,7 @@ def get_WaterQuality():
         quality_of_life_metrics.update(water_quality)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return water_quality
 
 
@@ -195,7 +195,7 @@ def get_elev():
         quality_of_life_metrics.update(elevation)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return elevation
 
 
@@ -211,7 +211,7 @@ def get_surface_temp():
         quality_of_life_metrics.update(surface_temp)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return surface_temp
 
 
@@ -229,7 +229,7 @@ def get_precipitation():
         quality_of_life_metrics.update(precipitation)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return precipitation
 
 
@@ -247,7 +247,7 @@ def get_era5():
         quality_of_life_metrics.update(era5_data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return era5_data
 
 
@@ -263,7 +263,7 @@ def get_AvgSurfT_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 
@@ -279,7 +279,7 @@ def get_Wind_f_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 
@@ -295,7 +295,7 @@ def get_CanopyWatContent_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # time-averaged canopy water evaporation
@@ -313,7 +313,7 @@ def get_ECanop_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # time-averaged soil water evaporation
@@ -331,7 +331,7 @@ def get_ESoil_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # time-averaged total evaporation
@@ -349,7 +349,7 @@ def get_Evap_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # time-averaged downward longwave radiation flux
@@ -367,7 +367,7 @@ def get_LWdown_f_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # time-averaged potential evaporation rate
@@ -385,7 +385,7 @@ def get_PotEvap_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # instantaneous surface air pressure
@@ -403,7 +403,7 @@ def get_Psurf_f_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # instantaneous specific humidity
@@ -421,7 +421,7 @@ def get_Qair_f_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # time-averaged ground heat flux
@@ -439,7 +439,7 @@ def get_Qg_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 
@@ -456,7 +456,7 @@ def get_Qs_acc():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Accumulated subsurface runoff
@@ -474,7 +474,7 @@ def get_Qsb_acc():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Accumulated snowmelt
@@ -492,7 +492,7 @@ def get_Qsm_acc():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Time-averaged rainfall rate
@@ -510,7 +510,7 @@ def get_Rainf_f_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Time-averaged total precipitation rate
@@ -528,7 +528,7 @@ def get_Rainf_tavg():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Instantaneous root zone soil moisture
@@ -546,7 +546,7 @@ def get_RootMoist_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 
@@ -562,7 +562,7 @@ def get_SoilMoi0_10cm_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Instantaneous soil moisture in the 100-200 cm layer
@@ -580,7 +580,7 @@ def get_SoilMoi100_200cm_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Instantaneous soil temperature in the 0-10 cm layer
@@ -598,7 +598,7 @@ def get_SoilTMP0_10cm_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Instantaneous soil temperature in the 100-200 cm layer
@@ -616,7 +616,7 @@ def get_SoilTMP100_200cm_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 # Instantaneous wind speed
@@ -634,7 +634,7 @@ def get_Wind_f_inst():
         quality_of_life_metrics.update(data)
 
     print(
-        f"The name of this function is {inspect.currentframe().f_code.co_name}.")
+        f"Function finished: {inspect.currentframe().f_code.co_name}.")
     return data
 
 
