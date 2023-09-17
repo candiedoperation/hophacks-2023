@@ -4,14 +4,16 @@ import 'chart.js/auto';
 import GraphCardRegion from './GraphCardRegion';
 
 const AirMoleculesRegion = (props) => {
+    React.useEffect(() => {console.warn(props)}, []);
     return (
+        (props.data) ?
         <GraphCardRegion title="Air Pollutant Distribution">
             <PolarArea
                 style={{ maxWidth: '100%' }}
                 data={{
-                    labels: Object.keys(props.data.air_quality).map((x) => x.split("_")[0]),
+                    labels: Object.keys(props.data).map((x) => x.split("_")[0]),
                     datasets: [{
-                        data: Object.values(props.data.air_quality),
+                        data: Object.values(props.data),
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.5)', // Red for NO2
                             'rgba(54, 162, 235, 0.5)', // Blue for O3
@@ -29,7 +31,7 @@ const AirMoleculesRegion = (props) => {
                     }
                 }}
             />
-        </GraphCardRegion>
+        </GraphCardRegion> : <></>
     );
 }
 
