@@ -1,3 +1,9 @@
+"""
+Created on Sat Sep 16 17:37:19 2023
+
+@author: Kushal
+"""
+
 import threading
 from tkinter import Image
 import ee
