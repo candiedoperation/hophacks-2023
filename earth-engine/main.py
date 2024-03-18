@@ -10,8 +10,6 @@ import ee
 import inspect
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import numpy as np
-from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -99,7 +97,19 @@ sample_weather = '''
 
 
 def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
-    """Creates an AOI for the analysis."""
+    """
+    Creates an Area of Interest (AOI) for the analysis.
+
+    Parameters:
+        latitude (float): The latitude of the center point of the AOI.
+        longitude (float): The longitude of the center point of the AOI.
+        d_lat (float, optional): The latitude span of the AOI. Defaults to 0.01.
+        d_lon (float, optional): The longitude span of the AOI. Defaults to 0.01.
+
+    Returns:
+        ee.Geometry.Polygon: The AOI polygon geometry.
+
+    """
     aoi = ee.Geometry.Polygon([
         [longitude - d_lon, latitude - d_lat],
         [longitude + d_lon, latitude - d_lat],
@@ -110,7 +120,7 @@ def def_aoi(latitude, longitude, d_lat=0.01, d_lon=0.01):
     return aoi
 
 
-# Declare as global to modify it in this function
+# Declared as global to modify it in this function
 global quality_of_life_metrics
 quality_of_life_metrics = {}
 lock = threading.Lock()
